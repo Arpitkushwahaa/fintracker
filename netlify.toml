@@ -1,0 +1,21 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Set Node.js version
+  NODE_VERSION = "18"
+  # Enable Next.js server-side rendering
+  NEXT_USE_SSR = "true"
+
+# Enable the Next.js plugin for proper handling of SSR
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Handle client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+  conditions = {Role = ["anonymous"]}

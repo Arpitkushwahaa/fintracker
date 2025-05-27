@@ -143,14 +143,28 @@ const CATEGORIES = [
 export default function TransactionsPage() {
   const router = useRouter()
   const { user, isLoading } = useAuth()
-  const [transactions, setTransactions] = useState([])
-  const [filteredTransactions, setFilteredTransactions] = useState([])
+  const [transactions, setTransactions] = useState<{
+    id: string;
+    description: string;
+    amount: number;
+    date: Date;
+    category: string;
+    accountId: string;
+  }[]>([])
+  const [filteredTransactions, setFilteredTransactions] = useState<{
+    id: string;
+    description: string;
+    amount: number;
+    date: Date;
+    category: string;
+    accountId: string;
+  }[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All')
   const [accountFilter, setAccountFilter] = useState('All')
   const [sortField, setSortField] = useState('date')
   const [sortDirection, setSortDirection] = useState('desc')
-  const [selectedTransactions, setSelectedTransactions] = useState([])
+  const [selectedTransactions, setSelectedTransactions] = useState<string[]>([])
   
   // Load transactions
   useEffect(() => {
@@ -198,7 +212,7 @@ export default function TransactionsPage() {
   }, [transactions, searchQuery, categoryFilter, accountFilter, sortField, sortDirection])
   
   // Toggle row selection
-  const toggleRowSelection = (transactionId) => {
+  const toggleRowSelection = (transactionId: string) => {
     setSelectedTransactions(prevSelected => {
       if (prevSelected.includes(transactionId)) {
         return prevSelected.filter(id => id !== transactionId)
@@ -227,7 +241,7 @@ export default function TransactionsPage() {
   }
   
   // Toggle sort direction
-  const toggleSort = (field) => {
+  const toggleSort = (field: string) => {
     if (sortField === field) {
       setSortDirection(prevDirection => prevDirection === 'asc' ? 'desc' : 'asc')
     } else {
@@ -237,7 +251,7 @@ export default function TransactionsPage() {
   }
   
   // Get account name by ID
-  const getAccountName = (accountId) => {
+  const getAccountName = (accountId: string) => {
     const account = ACCOUNTS.find(acc => acc.id === accountId)
     return account ? account.name : 'Unknown Account'
   }

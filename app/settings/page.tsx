@@ -72,8 +72,8 @@ export default function SettingsPage() {
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: user?.name || "",
-      email: user?.email || ""
+      name: user?.firstName || "",
+      email: user?.emailAddresses?.[0]?.emailAddress || ""
     },
   })
 
@@ -105,18 +105,18 @@ export default function SettingsPage() {
   useEffect(() => {
     if (user) {
       profileForm.reset({
-        name: user.name || "",
-        email: user.email || ""
+        name: user.firstName || "",
+        email: user.emailAddresses?.[0]?.emailAddress || ""
       })
     }
   }, [user, profileForm])
   
   // Initialize avatar from user data
   useEffect(() => {
-    if (user?.image) {
-      setAvatarSrc(user.image);
+    if (user?.imageUrl) {
+      setAvatarSrc(user.imageUrl);
     }
-  }, [user?.image])
+  }, [user?.imageUrl])
   
   // Check notification permission status
   useEffect(() => {
@@ -267,7 +267,7 @@ export default function SettingsPage() {
                     <div className="flex flex-col sm:flex-row gap-6 items-start">
                       <div className="flex flex-col items-center">
                         <Avatar className="h-24 w-24 mb-2 border-2 border-border bg-card">
-                          <AvatarImage src={avatarSrc || user.image || ''} alt={user.name || 'User'} />
+                          <AvatarImage src={avatarSrc || user.imageUrl || ''} alt={user.firstName || 'User'} />
                           <AvatarFallback className="bg-muted text-foreground">
                             <UserCircle className="h-12 w-12" />
                           </AvatarFallback>

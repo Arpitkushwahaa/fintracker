@@ -51,7 +51,15 @@ export default function AccountsPage() {
   const router = useRouter()
   const { user, isLoading } = useAuth()
   const { toast } = useToast()
-  const [accounts, setAccounts] = useState([])
+  const [accounts, setAccounts] = useState<{
+    id: string;
+    name: string;
+    balance: number;
+    type: string;
+    currency: string;
+    color: string;
+    isDefault: boolean;
+  }[]>([])
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false)
   
   // Load accounts

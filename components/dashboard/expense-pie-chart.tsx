@@ -13,7 +13,7 @@ const data = [
 ]
 
 export function ExpensePieChart() {
-  const [chartData, setChartData] = useState([])
+  const [chartData, setChartData] = useState<{ name: string; value: number; color: string; }[]>([])
   
   // Simulate data loading from API
   useEffect(() => {

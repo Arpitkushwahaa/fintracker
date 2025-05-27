@@ -87,7 +87,12 @@ export default function NewTransactionPage() {
   const router = useRouter()
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [receiptData, setReceiptData] = useState(null)
+  const [receiptData, setReceiptData] = useState<{
+    merchantName: string;
+    total: string;
+    date: Date;
+    items: { name: string; price: string; }[];
+  } | null>(null)
   const [isProcessingReceipt, setIsProcessingReceipt] = useState(false)
   
   const form = useForm<z.infer<typeof formSchema>>({

@@ -47,7 +47,7 @@ const data = [
 ]
 
 export function MonthlySpendingChart() {
-  const [chartData, setChartData] = useState([])
+  const [chartData, setChartData] = useState<{ name: string; income: number; expenses: number; }[]>([])
   
   // Simulate data loading from API
   useEffect(() => {
