@@ -1,0 +1,90 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String    @id @default(cuid())
+  name             String?
+  email            String    @unique
+  password         String?
+  emailVerified    DateTime?
+  image            String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  accounts         Account[]
+  transactions     Transaction[]
+  budgets          Budget[]
+  defaultAccountId String?
+}
+
+model Account {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  type        String   // checking, savings, credit_card, etc.
+  balance     Float    @default(0)
+  currency    String   @default("USD")
+  color       String?  // for UI display
+  icon        String?  // optional icon name
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@index([userId])
+}
+
+model Transaction {
+  id               String   @id @default(cuid())
+  userId           String
+  accountId        String
+  amount           Float
+  type             String   // income, expense
+  category         String
+  description      String?
+  date             DateTime
+  isRecurring      Boolean  @default(false)
+  recurringType    String?  // daily, weekly, monthly, yearly
+  recurringEndDate DateTime?
+  nextRecurringDate DateTime?
+  receiptUrl       String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account          Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([accountId])
+  @@index([date])
+  @@index([category])
+}
+
+model Budget {
+  id               String   @id @default(cuid())
+  userId           String
+  category         String
+  amount           Float
+  current          Float    @default(0)
+  period           String   // monthly, yearly
+  startDate        DateTime
+  endDate          DateTime
+  alertThreshold   Float    @default(0.8) // Alert when 80% of budget is used
+  alertSent        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([category])
+}
