@@ -1,5 +1,3 @@
-// This is your Prisma schema file
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,6 +9,7 @@ datasource db {
 
 model User {
   id               String    @id @default(cuid())
+  clerkId          String    @unique
   name             String?
   email            String    @unique
   password         String?
@@ -18,25 +17,26 @@ model User {
   image            String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+  defaultAccountId String?
+
   accounts         Account[]
   transactions     Transaction[]
   budgets          Budget[]
-  defaultAccountId String?
 }
 
 model Account {
   id          String   @id @default(cuid())
   userId      String
   name        String
-  type        String   // checking, savings, credit_card, etc.
+  type        String
   balance     Float    @default(0)
   currency    String   @default("USD")
-  color       String?  // for UI display
-  icon        String?  // optional icon name
+  color       String?
+  icon        String?
   isDefault   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
@@ -44,24 +44,24 @@ model Account {
 }
 
 model Transaction {
-  id               String   @id @default(cuid())
-  userId           String
-  accountId        String
-  amount           Float
-  type             String   // income, expense
-  category         String
-  description      String?
-  date             DateTime
-  isRecurring      Boolean  @default(false)
-  recurringType    String?  // daily, weekly, monthly, yearly
-  recurringEndDate DateTime?
+  id                String   @id @default(cuid())
+  userId            String
+  accountId         String
+  amount            Float
+  type              String
+  category          String
+  description       String?
+  date              DateTime
+  isRecurring       Boolean  @default(false)
+  recurringType     String?
+  recurringEndDate  DateTime?
   nextRecurringDate DateTime?
-  receiptUrl       String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  
-  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account          Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  receiptUrl        String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account           Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([accountId])
@@ -70,20 +70,20 @@ model Transaction {
 }
 
 model Budget {
-  id               String   @id @default(cuid())
-  userId           String
-  category         String
-  amount           Float
-  current          Float    @default(0)
-  period           String   // monthly, yearly
-  startDate        DateTime
-  endDate          DateTime
-  alertThreshold   Float    @default(0.8) // Alert when 80% of budget is used
-  alertSent        Boolean  @default(false)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  
-  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String   @id @default(cuid())
+  userId         String
+  category       String
+  amount         Float
+  current        Float    @default(0)
+  period         String
+  startDate      DateTime
+  endDate        DateTime
+  alertThreshold Float    @default(0.8)
+  alertSent      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([category])
